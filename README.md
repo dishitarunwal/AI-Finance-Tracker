@@ -31,3 +31,23 @@ npm run dev             # opens on http://localhost:5173
 ```
 
 Pages: **Dashboard** (balance, income/expense totals, balance trend, spending by category, recent activity), **Transactions** (search, sort, pagination, add/edit/delete with "Let AI decide" categorization) and **AI Insights** (monthly report, 6-month trend, category breakdown, uncategorized items).
+
+Amounts are shown in Indian Rupees (₹) by default; set `VITE_CURRENCY` in `frontend/.env` to use another currency.
+
+## ⚙️ Running the Backend
+```bash
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
+```
+
+The backend reads its settings from a `.env` file in the project root (`DATABASE_*`, `SECRET_KEY`, `ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`, `DATABASE_URL`, `GEMINI_API_KEY`, `GEMINI_MODEL_NAME`).
+
+The AI agent assigns category IDs 1–7, so those rows must exist in the `categories` table. After creating your first account, run:
+
+```sql
+INSERT INTO categories (id, name, user_id) VALUES
+  (1, 'Food & Dining', 1), (2, 'Transportation', 1), (3, 'Utilities', 1),
+  (4, 'Shopping', 1), (5, 'Entertainment', 1), (6, 'Healthcare', 1), (7, 'Income', 1);
+```
